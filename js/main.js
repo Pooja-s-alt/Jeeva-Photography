@@ -176,6 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const videoFilterBtns = document.querySelectorAll('.video-filter-btn');
   const cinemaModal = document.getElementById('videoCinemaModal');
   const cinemaPlayer = document.getElementById('cinemaVideoPlayer');
+  const cinemaIframe = document.getElementById('cinemaIframePlayer');
   const cinemaCloseBtn = document.getElementById('videoCinemaClose');
   const cinemaCloseLink = document.getElementById('cinemaCloseBtn');
   const cinemaBackdrop = document.getElementById('videoCinemaBackdrop');
@@ -192,8 +193,45 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeVideoList = [];
   let currentVideoIndex = 0;
 
+  // Helper to parse YouTube, Vimeo, or direct MP4 video URLs
+  const parseVideoSource = (src) => {
+    if (!src) return { type: 'none', url: '' };
+    const str = String(src).trim();
+
+    // YouTube regex (supports watch?v=, youtu.be/, /embed/, /shorts/)
+    const ytMatch = str.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+    if (ytMatch && ytMatch[1]) {
+      const vidId = ytMatch[1];
+      return {
+        type: 'youtube',
+        id: vidId,
+        embedUrl: `https://www.youtube-nocookie.com/embed/${vidId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`,
+        thumbnail: `https://img.youtube.com/vi/${vidId}/maxresdefault.jpg`,
+        fallbackThumb: `https://img.youtube.com/vi/${vidId}/hqdefault.jpg`
+      };
+    }
+
+    // Vimeo regex
+    const vimeoMatch = str.match(/vimeo\.com\/(?:video\/)?([0-9]+)/i);
+    if (vimeoMatch && vimeoMatch[1]) {
+      const vidId = vimeoMatch[1];
+      return {
+        type: 'vimeo',
+        id: vidId,
+        embedUrl: `https://player.vimeo.com/video/${vidId}?autoplay=1&title=0&byline=0&portrait=0`,
+        thumbnail: ''
+      };
+    }
+
+    // Direct video file (MP4, WebM, etc.)
+    return {
+      type: 'direct',
+      url: str
+    };
+  };
+
   const renderCinemaFilm = (index) => {
-    if (!cinemaPlayer || !activeVideoList.length) return;
+    if ((!cinemaPlayer && !cinemaIframe) || !activeVideoList.length) return;
     if (index < 0) index = 0;
     if (index >= activeVideoList.length) index = activeVideoList.length - 1;
     currentVideoIndex = index;
@@ -206,10 +244,36 @@ document.addEventListener('DOMContentLoaded', () => {
       try { v.pause(); } catch(e) {}
     });
 
-    // Reset and load the new video stream
-    cinemaPlayer.pause();
-    cinemaPlayer.src = videoItem.videoSrc;
-    cinemaPlayer.load();
+    const parsed = parseVideoSource(videoItem.videoSrc);
+
+    if (parsed.type === 'youtube' || parsed.type === 'vimeo') {
+      if (cinemaPlayer) {
+        cinemaPlayer.pause();
+        cinemaPlayer.style.display = 'none';
+        cinemaPlayer.removeAttribute('src');
+      }
+      if (cinemaIframe) {
+        cinemaIframe.style.display = 'block';
+        cinemaIframe.src = parsed.embedUrl;
+      }
+    } else {
+      if (cinemaIframe) {
+        cinemaIframe.style.display = 'none';
+        cinemaIframe.src = '';
+      }
+      if (cinemaPlayer) {
+        cinemaPlayer.style.display = 'block';
+        cinemaPlayer.pause();
+        cinemaPlayer.src = videoItem.videoSrc || '';
+        cinemaPlayer.load();
+        const playPromise = cinemaPlayer.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(err => {
+            console.warn('Cinema autoplay prevented; waiting for user interaction:', err);
+          });
+        }
+      }
+    }
 
     if (cinemaBadge) cinemaBadge.textContent = videoItem.badge || '4K Ultra HD';
     if (cinemaCat) cinemaCat.textContent = videoItem.categoryLabel || 'Wedding Film';
@@ -234,18 +298,10 @@ document.addEventListener('DOMContentLoaded', () => {
         cinemaSwitcherList.appendChild(chip);
       });
     }
-
-    // Attempt auto-playback
-    const playPromise = cinemaPlayer.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(err => {
-        console.warn('Cinema autoplay prevented; waiting for user interaction:', err);
-      });
-    }
   };
 
   const openCinemaModal = (list, index = 0) => {
-    if (!cinemaModal || !cinemaPlayer || !list || !list.length) return;
+    if (!cinemaModal || !list || !list.length) return;
     activeVideoList = list;
     cinemaModal.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -253,12 +309,18 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const closeCinemaModal = () => {
-    if (!cinemaModal || !cinemaPlayer) return;
-    try {
-      cinemaPlayer.pause();
-      cinemaPlayer.removeAttribute('src');
-      cinemaPlayer.load();
-    } catch (e) {}
+    if (!cinemaModal) return;
+    if (cinemaPlayer) {
+      try {
+        cinemaPlayer.pause();
+        cinemaPlayer.removeAttribute('src');
+        cinemaPlayer.load();
+      } catch (e) {}
+    }
+    if (cinemaIframe) {
+      cinemaIframe.src = '';
+      cinemaIframe.style.display = 'none';
+    }
     cinemaModal.classList.remove('active');
     document.body.style.overflow = '';
   };
@@ -326,18 +388,39 @@ document.addEventListener('DOMContentLoaded', () => {
       const card = document.createElement('div');
       card.className = `video-card ${isFeatured ? 'featured' : 'standard'} reveal active`;
 
-      card.innerHTML = `
-        <div class="video-media-box" data-video-src="${video.videoSrc}">
+      const parsed = parseVideoSource(video.videoSrc);
+      const posterImg = video.poster || (parsed.type === 'youtube' ? parsed.thumbnail : 'images/hero-slide-1.jpg');
+
+      let mediaHtml = '';
+      if (parsed.type === 'direct') {
+        mediaHtml = `
           <video 
             class="video-preview-el" 
             muted 
             loop 
             playsinline 
             preload="metadata"
-            poster="${video.poster || ''}"
+            poster="${posterImg}"
           >
             <source src="${video.videoSrc}" type="video/mp4" />
           </video>
+        `;
+      } else {
+        const fallback = parsed.fallbackThumb || 'images/hero-slide-1.jpg';
+        mediaHtml = `
+          <img 
+            src="${posterImg}" 
+            alt="${video.title}" 
+            class="video-preview-img" 
+            loading="lazy"
+            onerror="if(this.src!=='${fallback}')this.src='${fallback}';"
+          />
+        `;
+      }
+
+      card.innerHTML = `
+        <div class="video-media-box" data-video-src="${video.videoSrc}">
+          ${mediaHtml}
 
           <div class="video-media-overlay">
             <div class="video-top-meta">
@@ -352,7 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <div class="video-preview-status">
-              <span class="status-dot"></span> Click to watch full film • Hover to preview
+              <span class="status-dot"></span> Click to watch full film
             </div>
           </div>
         </div>
@@ -376,7 +459,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
 
-      // Hover to preview video playback
+      // Hover to preview video playback (only if direct MP4)
       const mediaBox = card.querySelector('.video-media-box');
       const previewVideo = card.querySelector('.video-preview-el');
 

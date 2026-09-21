@@ -309,43 +309,83 @@ const JeevaDB = (() => {
   }
 
   // VIDEOS CRUD
+  // VIDEO_HIGHLIGHTS_DATA (video-data.js) is always the MASTER source of truth.
+  // localStorage only stores EXTRA videos added via admin panel on top of the base set.
   function getVideos() {
-    const custom = getLS('jp_videos', null);
-    if (custom && Array.isArray(custom)) return custom;
     if (typeof VIDEO_HIGHLIGHTS_DATA !== 'undefined') {
-      return JSON.parse(JSON.stringify(VIDEO_HIGHLIGHTS_DATA));
+      const base = JSON.parse(JSON.stringify(VIDEO_HIGHLIGHTS_DATA));
+      // Merge any admin-added custom videos from localStorage (those NOT in base)
+      const custom = getLS('jp_videos_extra', []);
+      if (Array.isArray(custom) && custom.length) {
+        // Filter: only include truly custom ones (ids not in base)
+        const baseIds = new Set(base.map(v => v.id));
+        const extras = custom.filter(v => !baseIds.has(v.id));
+        return [...base, ...extras];
+      }
+      return base;
     }
     return [];
   }
 
   function saveVideos(list) {
-    setLS('jp_videos', list);
+    // Save only the EXTRA videos (not in base VIDEO_HIGHLIGHTS_DATA) to localStorage
+    const baseIds = typeof VIDEO_HIGHLIGHTS_DATA !== 'undefined'
+      ? new Set(VIDEO_HIGHLIGHTS_DATA.map(v => v.id))
+      : new Set();
+    const extras = list.filter(v => !baseIds.has(v.id));
+    setLS('jp_videos_extra', extras);
     window.dispatchEvent(new CustomEvent('jeeva:videosUpdated', { detail: list }));
   }
 
   function addVideoItem(item) {
-    const list = getVideos();
     if (!item.id) item.id = 'v_' + Date.now();
-    list.unshift(item);
-    saveVideos(list);
+    const extras = getLS('jp_videos_extra', []);
+    extras.unshift(item);
+    setLS('jp_videos_extra', extras);
+    const allVideos = getVideos();
+    window.dispatchEvent(new CustomEvent('jeeva:videosUpdated', { detail: allVideos }));
     return item;
   }
 
   function updateVideoItem(id, updatedFields) {
-    const list = getVideos();
-    const idx = list.findIndex(x => String(x.id) === String(id));
+    // Check if it's a base video (can't edit base directly - only affects display via data file)
+    const baseIds = typeof VIDEO_HIGHLIGHTS_DATA !== 'undefined'
+      ? new Set(VIDEO_HIGHLIGHTS_DATA.map(v => v.id))
+      : new Set();
+    if (baseIds.has(id)) {
+      // For base videos, store override in extras with same id
+      const extras = getLS('jp_videos_extra', []);
+      const existingOverride = extras.findIndex(x => String(x.id) === String(id));
+      if (existingOverride !== -1) {
+        extras[existingOverride] = { ...extras[existingOverride], ...updatedFields };
+      } else {
+        const base = VIDEO_HIGHLIGHTS_DATA.find(v => String(v.id) === String(id));
+        extras.push({ ...base, ...updatedFields });
+      }
+      setLS('jp_videos_extra', extras);
+      const allVideos = getVideos();
+      window.dispatchEvent(new CustomEvent('jeeva:videosUpdated', { detail: allVideos }));
+      return updatedFields;
+    }
+    // Extra video edit
+    const extras = getLS('jp_videos_extra', []);
+    const idx = extras.findIndex(x => String(x.id) === String(id));
     if (idx !== -1) {
-      list[idx] = { ...list[idx], ...updatedFields };
-      saveVideos(list);
-      return list[idx];
+      extras[idx] = { ...extras[idx], ...updatedFields };
+      setLS('jp_videos_extra', extras);
+      const allVideos = getVideos();
+      window.dispatchEvent(new CustomEvent('jeeva:videosUpdated', { detail: allVideos }));
+      return extras[idx];
     }
     return null;
   }
 
   function deleteVideoItem(id) {
-    let list = getVideos();
-    list = list.filter(x => String(x.id) !== String(id));
-    saveVideos(list);
+    let extras = getLS('jp_videos_extra', []);
+    extras = extras.filter(x => String(x.id) !== String(id));
+    setLS('jp_videos_extra', extras);
+    const allVideos = getVideos();
+    window.dispatchEvent(new CustomEvent('jeeva:videosUpdated', { detail: allVideos }));
     return true;
   }
 
@@ -524,7 +564,7 @@ const JeevaDB = (() => {
     localStorage.removeItem('jp_home');
     localStorage.removeItem('jp_about');
     localStorage.removeItem('jp_portfolio');
-    localStorage.removeItem('jp_videos');
+    localStorage.removeItem('jp_videos_extra');
     localStorage.removeItem('jp_test');
     localStorage.removeItem('jp_packages');
     localStorage.removeItem('jp_settings');
