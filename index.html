@@ -42,6 +42,7 @@
       </nav>
 
       <div class="nav-actions">
+
         <a href="#contact" class="btn btn-primary">Book Now</a>
         <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu">
           <span></span>
@@ -1036,6 +1037,16 @@
               </div>
             </a>
 
+            <a href="https://youtube.com/@jeevabcom21?si=iKCBacXOZ9YXn1Wq" target="_blank" rel="noopener" class="contact-item-card">
+              <div class="contact-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              </div>
+              <div>
+                <div class="contact-detail-label">Watch on YouTube</div>
+                <div class="contact-detail-val">@jeevabcom21</div>
+              </div>
+            </a>
+
           </div>
 
           <div style="color: var(--text-dark-muted); font-size: 0.85rem;">
@@ -1151,6 +1162,9 @@
             <a href="https://www.instagram.com/__jeeva_photography__?stkn=MTUxejlxN2JxaDZvaQ==" target="_blank" rel="noopener" class="social-icon-btn" aria-label="Instagram" title="Instagram">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
             </a>
+            <a href="https://youtube.com/@jeevabcom21?si=iKCBacXOZ9YXn1Wq" target="_blank" rel="noopener" class="social-icon-btn" aria-label="YouTube Channel" title="YouTube Channel">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </a>
             <a href="https://wa.me/919514751045" target="_blank" rel="noopener" class="social-icon-btn" aria-label="WhatsApp" title="WhatsApp">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
             </a>
@@ -1249,6 +1263,8 @@
           <span class="footer-sep">•</span>
           <span>Preserving Timeless Emotions</span>
           <span class="footer-sep">•</span>
+          <a href="admin.html" target="_blank" style="color:var(--gold-light);font-weight:600;">Admin Portal</a>
+          <span class="footer-sep">•</span>
           <a href="#hero" class="footer-back-to-top">
             <span>Back to Top</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
@@ -1287,7 +1303,11 @@
     </svg>
   </a>
 
-  <!-- Admin Portal accessible directly at /admin.html -->
+  <!-- ================= FLOATING ADMIN PORTAL QUICK ACCESS BUTTON ================= -->
+  <a href="admin.html" class="floating-admin-btn" target="_blank" title="Open Studio Admin Portal" aria-label="Admin Portal">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+    <span>Admin Portal</span>
+  </a>
 
   <!-- ================= VIDEO CINEMA THEATER MODAL ================= -->
   <div class="video-cinema-modal" id="videoCinemaModal" role="dialog" aria-modal="true" aria-label="Cinematic Film Player">
@@ -1299,6 +1319,7 @@
 
       <div class="video-player-frame">
         <video id="cinemaVideoPlayer" class="cinema-video" controls playsinline preload="auto"></video>
+        <iframe id="cinemaIframePlayer" class="cinema-video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="display: none; border: 0; width: 100%; height: 100%;"></iframe>
       </div>
 
       <div class="video-cinema-info">
