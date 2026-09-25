@@ -694,6 +694,15 @@ Sent via Jeeva Photography Website`;
 
   // 9. Dynamic Packages Rendering & Quick Booking Deep Links
   const packagesContainer = document.getElementById('packagesGridContainer');
+  let activePackageCategory = 'Engagement & Wedding';
+
+  window.setPackageCategory = (cat, btn) => {
+    activePackageCategory = cat;
+    document.querySelectorAll('.pkg-tab-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    renderPackages();
+  };
+
   const attachPackageEvents = () => {
     const packageBtns = document.querySelectorAll('.select-package-btn');
     packageBtns.forEach(btn => {
@@ -732,53 +741,107 @@ Sent via Jeeva Photography Website`;
 
   const renderPackages = () => {
     if (!packagesContainer || typeof JeevaDB === 'undefined') return;
-    const list = JeevaDB.getPackages();
-    if (!list || !list.length) return;
+    const allPkgs = JeevaDB.getPackages();
+    if (!allPkgs || !allPkgs.length) return;
 
-    packagesContainer.innerHTML = list.map(pkg => `
-      <div class="package-card ${pkg.isPopular ? 'popular-card' : ''} reveal active" data-package="${pkg.title} - Rs ${pkg.price}">
-        ${pkg.isPopular ? `<div class="popular-badge-pill">${pkg.popularBadge || 'Most Popular'}</div>` : ''}
-        <h3 class="package-script-title">${pkg.scriptTitle || pkg.title}</h3>
-        
-        <div class="package-photo-frame">
-          <div class="pkg-main-wrap">
-            <img 
-              src="${pkg.mainImage || 'images/hero-slide-2.jpg'}" 
-              alt="${pkg.title}" 
-              class="pkg-main-img" 
-              loading="lazy"
-              onerror="this.src='images/hero-slide-2.jpg'"
-            />
-            <div class="pkg-badge-overlay">${pkg.badge || 'PROMESSE'}</div>
-          </div>
-          <div class="pkg-floating-thumb ${pkg.isPopular ? 'right-thumb' : ''}">
-            <img src="${pkg.thumbImage || 'images/hero-slide-1.jpg'}" alt="Preview" loading="lazy" onerror="this.src='images/hero-slide-1.jpg'" />
-          </div>
-          <div class="pkg-price-pill">
-            <span class="price-currency">${pkg.currency || 'Rs'}</span>
-            <span class="price-amount">${pkg.price}</span>
-          </div>
-        </div>
+    // Filter by active category
+    const list = allPkgs.filter(p => (p.category || 'Engagement & Wedding') === activePackageCategory);
+    const displayList = list.length ? list : allPkgs.slice(0, 3);
 
-        <div class="package-coverage-box">
-          <h4 class="package-coverage-title">COVERAGE :</h4>
-          <ul class="package-features-list">
-            ${(pkg.features || []).map(f => `<li>${f}</li>`).join('')}
+    packagesContainer.innerHTML = displayList.map(pkg => {
+      // Build services HTML
+      let servicesHtml = '';
+      if (pkg.services && Array.isArray(pkg.services) && pkg.services.length) {
+        servicesHtml = `
+          <div class="pkg-block-section">
+            <h4 class="pkg-main-section-title">SERVICE :</h4>
+            ${pkg.services.map(s => `
+              <div class="pkg-category-group">
+                ${s.group && s.group !== 'SERVICE' ? `<span class="pkg-subgroup-label">${s.group}</span>` : ''}
+                <ul class="pkg-square-list">
+                  ${(s.items || []).map(item => `<li>${item}</li>`).join('')}
+                </ul>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      // Build outputs HTML
+      let outputsHtml = '';
+      if (pkg.outputs && Array.isArray(pkg.outputs) && pkg.outputs.length) {
+        outputsHtml = `
+          <div class="pkg-block-section">
+            <h4 class="pkg-main-section-title">OUTPUTS :</h4>
+            <ul class="pkg-square-list">
+              ${pkg.outputs.map(out => `<li>${out}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
+      // Fallback for simple features if services/outputs are not present
+      const fallbackFeaturesHtml = (!servicesHtml && !outputsHtml && pkg.features && pkg.features.length) ? `
+        <div class="pkg-block-section">
+          <h4 class="pkg-main-section-title">COVERAGE :</h4>
+          <ul class="pkg-square-list">
+            ${pkg.features.map(f => `<li>${f}</li>`).join('')}
           </ul>
         </div>
+      ` : '';
 
-        <div class="package-btn-wrap">
-          <a href="#contact" class="btn btn-primary select-package-btn" data-package-val="${pkg.title} - Rs ${pkg.price}">Book Now</a>
+      return `
+        <div class="package-card ${pkg.isPopular ? 'popular-card' : ''} reveal active" data-package="${pkg.title} - Rs ${pkg.price}">
+          ${pkg.isPopular ? `<div class="popular-badge-pill">${pkg.popularBadge || 'Most Popular'}</div>` : ''}
+          <div class="package-header-wrap">
+            <h3 class="package-script-title">${pkg.scriptTitle || pkg.title}</h3>
+            <span class="package-subtitle-tag">${pkg.subtitle || pkg.category || 'WEDDING'}</span>
+          </div>
+          
+          <div class="package-photo-frame">
+            <div class="pkg-main-wrap">
+              <img 
+                src="${pkg.mainImage || 'images/hero-slide-2.jpg'}" 
+                alt="${pkg.title}" 
+                class="pkg-main-img" 
+                loading="lazy"
+                onerror="this.src='images/hero-slide-2.jpg'"
+              />
+              <div class="pkg-badge-overlay">${pkg.badge || 'PROMESSE'}</div>
+            </div>
+            <div class="pkg-price-pill">
+              <span class="price-currency">${pkg.currency || 'Rs'}</span>
+              <span class="price-amount">${pkg.price}</span>
+            </div>
+          </div>
+
+          <div class="pkg-details-structured">
+            ${servicesHtml}
+            ${outputsHtml}
+            ${fallbackFeaturesHtml}
+          </div>
+
+          <div class="package-btn-wrap">
+            <a href="#contact" class="btn btn-primary select-package-btn" data-package-val="${pkg.title} - Rs ${pkg.price}">Book Now</a>
+          </div>
         </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
 
-    // Also update #eventType options in the booking form
+    // Also update #eventType options in the booking form with all 3 categories
     const select = document.getElementById('eventType');
     if (select) {
       const currentVal = select.value;
+      const engList = allPkgs.filter(p => p.category === 'Engagement & Wedding');
+      const wedList = allPkgs.filter(p => p.category === 'Wedding');
+      const recepList = allPkgs.filter(p => p.category === 'Wedding & Reception');
+      const otherList = allPkgs.filter(p => p.category !== 'Engagement & Wedding' && p.category !== 'Wedding' && p.category !== 'Wedding & Reception');
+
       select.innerHTML = '<option value="" disabled selected>Select an experience / package</option>' +
-        list.map(p => `<option value="${p.title} - Rs ${p.price}">${p.title} — Rs ${p.price}</option>`).join('') +
+        (engList.length ? `<optgroup label="Engagement & Wedding Packages">${engList.map(p => `<option value="${p.title} - Rs ${p.price}">${p.title} — Rs ${p.price}</option>`).join('')}</optgroup>` : '') +
+        (wedList.length ? `<optgroup label="Wedding Only Packages">${wedList.map(p => `<option value="${p.title} - Rs ${p.price}">${p.title} — Rs ${p.price}</option>`).join('')}</optgroup>` : '') +
+        (recepList.length ? `<optgroup label="Wedding & Reception Packages">${recepList.map(p => `<option value="${p.title} - Rs ${p.price}">${p.title} — Rs ${p.price}</option>`).join('')}</optgroup>` : '') +
+        (otherList.length ? `<optgroup label="Other Packages">${otherList.map(p => `<option value="${p.title} - Rs ${p.price}">${p.title} — Rs ${p.price}</option>`).join('')}</optgroup>` : '') +
         '<option value="Custom Bespoke Package">Custom Bespoke Photography & Cinema</option>';
       if (currentVal) select.value = currentVal;
     }

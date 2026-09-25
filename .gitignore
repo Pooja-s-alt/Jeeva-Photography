@@ -1,0 +1,19 @@
+# Jeeva Photography - Git Ignore
+# Exclude large video files (host on YouTube/Vimeo instead)
+videos/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+*.code-workspace
+
+# Logs
+*.log
+
+# Temp files
+*.tmp
+*.temp

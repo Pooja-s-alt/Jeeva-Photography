@@ -105,6 +105,8 @@ const JeevaDB = (() => {
     founderName: 'Jeeva',
     founderRole: 'Founder & Lead Artist',
     founderImage: 'images/founder.jpg',
+    aboutImg2: 'images/about-2.jpg',
+    aboutImg3: 'images/about-3.jpg',
     floatingBadgeNum: '571+',
     floatingBadgeLabel: 'Happy Clients',
     features: [
@@ -115,65 +117,396 @@ const JeevaDB = (() => {
     ]
   };
 
-  // PACKAGES DEFAULT DATA
+  // PACKAGES DEFAULT DATA (1. Engagement & Wedding, 2. Wedding, 3. Wedding & Reception)
+  const PACKAGES_DATA_VERSION = 'v5-user-custom-profile-pics';
   const DEFAULT_PACKAGES = [
+    // --- 1. ENGAGEMENT & WEDDING ---
     {
-      id: 'pkg-1',
-      title: 'Premium Package',
+      id: 'pkg-engagement-wedding-premium',
+      category: 'Engagement & Wedding',
+      title: 'Premium Package - Engagement & Wedding',
       scriptTitle: 'Premium',
+      subtitle: 'ENGAGEMENT & WEDDING',
+      price: '1,20,000',
+      currency: 'Rs',
+      badge: 'PROMESSE',
+      isPopular: false,
+      mainImage: 'images/pkg-profile-premium.jpg',
+      services: [
+        {
+          group: 'SERVICE',
+          items: ['Pre wedding shoot (photos & videos + Drone)']
+        },
+        {
+          group: 'ENGAGEMENT',
+          items: [
+            'One Traditional Photo & videos',
+            'One Candid Photo',
+            'Post wedding shoot (photos Only)'
+          ]
+        },
+        {
+          group: 'WEDDING',
+          items: [
+            'One Traditional Photo & videos',
+            'One Candid Photo & videos',
+            'Drone (Engagement & wedding)'
+          ]
+        }
+      ],
+      outputs: [
+        'Cinematic highlight videos',
+        'Two Premium Album (Engagement & Wedding)',
+        'Reels one & 3mins pre wedding shoot videos',
+        'Traditional videos pendrive copy two',
+        'frame two (12 x 18)',
+        'Calender two copy'
+      ],
+      features: [
+        'Pre wedding shoot (photos & videos + Drone)',
+        'Engagement: Traditional Photo & videos, Candid Photo, Post wedding shoot',
+        'Wedding: Traditional Photo & videos, Candid Photo & videos, Drone',
+        'Outputs: Cinematic highlight, 2 Premium Albums, Reels & 3min video, 2 Pendrives, 2 Frames (12x18), 2 Calendars'
+      ]
+    },
+    {
+      id: 'pkg-engagement-wedding-standard',
+      category: 'Engagement & Wedding',
+      title: 'Standard Package - Engagement & Wedding',
+      scriptTitle: 'Standard',
+      subtitle: 'ENGAGEMENT & WEDDING',
+      price: '80,000',
+      currency: 'Rs',
+      badge: 'EVERYTHING',
+      isPopular: true,
+      popularBadge: 'Most Popular',
+      mainImage: 'images/pkg-profile-standard.jpg',
+      services: [
+        {
+          group: 'SERVICE',
+          items: ['Pre wedding shoot (videos + Drone)']
+        },
+        {
+          group: 'ENGAGEMENT',
+          items: [
+            'One Traditional Photo & videos'
+          ]
+        },
+        {
+          group: 'WEDDING',
+          items: [
+            'One Traditional Photo & videos',
+            'One Candid Photo',
+            'Post wedding shoot (photos Only)'
+          ]
+        }
+      ],
+      outputs: [
+        'Two Premium Album (Engagement & Wedding)',
+        'Reels one & 3mins pre wedding shoot videos',
+        'Traditional videos pendrive copy two',
+        'frame two (12 x 18)',
+        'Calender two copy'
+      ],
+      features: [
+        'Pre wedding shoot (videos + Drone)',
+        'Engagement: Traditional Photo & videos',
+        'Wedding: Traditional Photo & videos, Candid Photo, Post wedding shoot',
+        'Outputs: 2 Premium Albums, Reels & 3min video, 2 Pendrives, 2 Frames (12x18), 2 Calendars'
+      ]
+    },
+    {
+      id: 'pkg-engagement-wedding-basic',
+      category: 'Engagement & Wedding',
+      title: 'Basic Package - Engagement & Wedding',
+      scriptTitle: 'Basic',
+      subtitle: 'ENGAGEMENT & WEDDING',
+      price: '45,000',
+      currency: 'Rs',
+      badge: 'TIMELESS UNION',
+      isPopular: false,
+      mainImage: 'images/pkg-profile-basic.jpg',
+      services: [
+        {
+          group: 'ENGAGEMENT',
+          items: [
+            'One Traditional Photo & videos'
+          ]
+        },
+        {
+          group: 'WEDDING',
+          items: [
+            'One Traditional Photo & videos',
+            'One Candid Photo & videos',
+            'Post wedding shoot (photos Only)'
+          ]
+        }
+      ],
+      outputs: [
+        'One Premium Album',
+        'Reels one',
+        'Traditional videos pendrive copy One',
+        'frame two (12 x 18)',
+        'Calender One copy'
+      ],
+      features: [
+        'Engagement: Traditional Photo & videos',
+        'Wedding: Traditional Photo & videos, Candid Photo & videos, Post wedding shoot',
+        'Outputs: 1 Premium Album, Reels one, 1 Pendrive copy, 2 Frames (12x18), 1 Calendar'
+      ]
+    },
+
+    // --- 2. WEDDING ONLY ---
+    {
+      id: 'pkg-wedding-premium',
+      category: 'Wedding',
+      title: 'Premium Package - Wedding',
+      scriptTitle: 'Premium',
+      subtitle: 'WEDDING',
       price: '1,60,000',
       currency: 'Rs',
       badge: 'PROMESSE',
       isPopular: false,
-      mainImage: 'images/hero-slide-2.jpg',
-      thumbImage: 'images/hero-slide-1.jpg',
+      mainImage: 'images/pkg-profile-premium.jpg',
+      services: [
+        {
+          group: 'SERVICE',
+          items: ['Pre wedding shoot (photos & videos + Drone)']
+        },
+        {
+          group: 'WEDDING',
+          items: [
+            'One Traditional Photo & videos',
+            'One Candid Photo & videos',
+            'Drone (wedding)',
+            'LED screen (12 x 8)',
+            'Post wedding (photos only)'
+          ]
+        }
+      ],
+      outputs: [
+        'Cinematic highlight videos',
+        'Two Premium Album',
+        'Reels one & 3mins pre wedding shoot videos',
+        'Traditional videos pendrive copy two',
+        'frame two (12 x 18)',
+        'Calender two copy'
+      ],
       features: [
-        'Full-Day Coverage (8–12 Hours)',
-        'Pre-Wedding Ceremony',
-        'Wedding Ceremony',
-        'Reception Coverage',
-        'Family and Group Portraits',
-        'Couple Portraits',
-        'Candid Photography throughout the event'
+        'Pre wedding shoot (photos & videos + Drone)',
+        'Wedding: Traditional Photo & videos, Candid Photo & videos, Drone (wedding), LED screen (12x8), Post wedding',
+        'Outputs: Cinematic highlight, 2 Premium Albums, Reels & 3min video, 2 Pendrives, 2 Frames (12x18), 2 Calendars'
       ]
     },
     {
-      id: 'pkg-2',
-      title: 'Standard Package',
+      id: 'pkg-wedding-standard',
+      category: 'Wedding',
+      title: 'Standard Package - Wedding',
       scriptTitle: 'Standard',
+      subtitle: 'WEDDING',
       price: '1,00,000',
       currency: 'Rs',
       badge: 'EVERYTHING',
       isPopular: true,
       popularBadge: 'Most Popular',
-      mainImage: 'images/hero-slide-3.jpg',
-      thumbImage: 'images/hero-slide-1.jpg',
+      mainImage: 'images/pkg-profile-standard.jpg',
+      services: [
+        {
+          group: 'SERVICE',
+          items: ['Pre wedding shoot (videos + Drone)']
+        },
+        {
+          group: 'WEDDING',
+          items: [
+            'One Traditional Photo & videos',
+            'One Candid Photo & videos',
+            'Drone',
+            'Post wedding'
+          ]
+        }
+      ],
+      outputs: [
+        'Cinematic highlight videos',
+        'One Premium Album',
+        'Reels one & 3mins pre wedding shoot videos',
+        'Traditional videos pendrive copy two',
+        'frame two (12 x 18)',
+        'Calender two copy'
+      ],
       features: [
-        '1 Lead Professional Photographer',
-        '1 Assistant Photographer (Optional)',
-        'Online Gallery for easy sharing',
-        'USB Drive with all edited images',
-        'Premium Photo Album (Optional)',
-        'Same-Day Teaser Photos (10–20 Images)',
-        'Couple Portraits, Candid Photography throughout the event'
+        'Pre wedding shoot (videos + Drone)',
+        'Wedding: Traditional Photo & videos, Candid Photo & videos, Drone, Post wedding',
+        'Outputs: Cinematic highlight, 1 Premium Album, Reels & 3min video, 2 Pendrives, 2 Frames (12x18), 2 Calendars'
       ]
     },
     {
-      id: 'pkg-3',
-      title: 'Basic Package',
+      id: 'pkg-wedding-basic',
+      category: 'Wedding',
+      title: 'Basic Package - Wedding',
       scriptTitle: 'Basic',
+      subtitle: 'WEDDING',
       price: '80,000',
       currency: 'Rs',
       badge: 'TIMELESS UNION',
       isPopular: false,
-      mainImage: 'images/pkg-basic-main.jpg',
-      thumbImage: 'images/hero-slide-2.jpg',
+      mainImage: 'images/pkg-profile-basic.jpg',
+      services: [
+        {
+          group: 'WEDDING',
+          items: [
+            'One Traditional Photo & videos',
+            'One Candid Photo& videos',
+            'Post wedding'
+          ]
+        }
+      ],
+      outputs: [
+        'One Premium Album',
+        'Reels one',
+        'Traditional videos pendrive copy One',
+        'frame two (12 x 18)',
+        'Calender One copy'
+      ],
       features: [
-        '1 Lead Professional Photographer',
-        '1 Assistant Photographer (Optional)',
-        'Album (Optional)',
-        'Same-Day Teaser Photos (10–20 Images)',
-        'Couple Portraits, Candid Photography throughout the event'
+        'Wedding: Traditional Photo & videos, Candid Photo & videos, Post wedding',
+        'Outputs: 1 Premium Album, Reels one, 1 Pendrive copy, 2 Frames (12x18), 1 Calendar'
+      ]
+    },
+
+    // --- 3. WEDDING & RECEPTION ---
+    {
+      id: 'pkg-wedding-reception-premium',
+      category: 'Wedding & Reception',
+      title: 'Premium Package - Wedding & Reception',
+      scriptTitle: 'Premium',
+      subtitle: 'WEDDING & RECEPTION',
+      price: '2,00,000',
+      currency: 'Rs',
+      badge: 'PROMESSE',
+      isPopular: false,
+      mainImage: 'images/pkg-profile-premium.jpg',
+      services: [
+        {
+          group: 'SERVICE',
+          items: ['Pre wedding shoot (photos & videos + Drone)']
+        },
+        {
+          group: 'WEDDING',
+          items: [
+            'One Traditional Photo & videos',
+            'One Candid Photo & videos',
+            'Drone (wedding or reception)'
+          ]
+        },
+        {
+          group: 'RECEPTION',
+          items: [
+            'One Traditional Photo & videos',
+            'One Candid Photo',
+            'Post wedding shoot (photos Only)'
+          ]
+        }
+      ],
+      outputs: [
+        'Cinematic highlight videos',
+        'Two Premium Album (Wedding & Reception)',
+        'Reels one & 3mins pre wedding shoot videos',
+        'Traditional videos pendrive copy two',
+        'frame two (12 x 18)',
+        'Calender two copy'
+      ],
+      features: [
+        'Pre wedding shoot (photos & videos + Drone)',
+        'Wedding: Traditional Photo & videos, Candid Photo & videos, Drone (wedding or reception)',
+        'Reception: Traditional Photo & videos, Candid Photo, Post wedding shoot',
+        'Outputs: Cinematic highlight, 2 Premium Albums (Wedding & Reception), Reels & 3min video, 2 Pendrives, 2 Frames (12x18), 2 Calendars'
+      ]
+    },
+    {
+      id: 'pkg-wedding-reception-standard',
+      category: 'Wedding & Reception',
+      title: 'Standard Package - Wedding & Reception',
+      scriptTitle: 'Standard',
+      subtitle: 'WEDDING & RECEPTION',
+      price: '1,60,000',
+      currency: 'Rs',
+      badge: 'EVERYTHING',
+      isPopular: true,
+      popularBadge: 'Most Popular',
+      mainImage: 'images/pkg-profile-standard.jpg',
+      services: [
+        {
+          group: 'SERVICE',
+          items: ['Pre wedding shoot (videos + Drone)']
+        },
+        {
+          group: 'WEDDING',
+          items: [
+            'One Traditional Photo & videos',
+            'One Candid Photo & videos'
+          ]
+        },
+        {
+          group: 'RECEPTION',
+          items: [
+            'One Traditional Photo & videos',
+            'Post wedding shoot (photos Only)'
+          ]
+        }
+      ],
+      outputs: [
+        'Cinematic highlight videos',
+        'Two Premium Album (Wedding & Reception)',
+        'Reels one & 3mins pre wedding shoot videos',
+        'Traditional videos pendrive copy two',
+        'frame two (12 x 18)',
+        'Calender two copy'
+      ],
+      features: [
+        'Pre wedding shoot (videos + Drone)',
+        'Wedding: Traditional Photo & videos, Candid Photo & videos',
+        'Reception: Traditional Photo & videos, Post wedding shoot',
+        'Outputs: Cinematic highlight, 2 Premium Albums (Wedding & Reception), Reels & 3min video, 2 Pendrives, 2 Frames (12x18), 2 Calendars'
+      ]
+    },
+    {
+      id: 'pkg-wedding-reception-basic',
+      category: 'Wedding & Reception',
+      title: 'Basic Package - Wedding & Reception',
+      scriptTitle: 'Basic',
+      subtitle: 'WEDDING & RECEPTION',
+      price: '1,00,000',
+      currency: 'Rs',
+      badge: 'TIMELESS UNION',
+      isPopular: false,
+      mainImage: 'images/pkg-profile-basic.jpg',
+      services: [
+        {
+          group: 'WEDDING',
+          items: [
+            'One Traditional Photo & videos',
+            'One Candid Photo& videos'
+          ]
+        },
+        {
+          group: 'RECEPTION',
+          items: [
+            'One Traditional Photo & videos',
+            'Post wedding shoot (photos Only)'
+          ]
+        }
+      ],
+      outputs: [
+        'One Premium Album',
+        'Reels one',
+        'Traditional videos pendrive copy One',
+        'frame two (12 x 18)',
+        'Calender One copy'
+      ],
+      features: [
+        'Wedding: Traditional Photo & videos, Candid Photo & videos',
+        'Reception: Traditional Photo & videos, Post wedding shoot',
+        'Outputs: 1 Premium Album, Reels one, 1 Pendrive copy, 2 Frames (12x18), 1 Calendar'
       ]
     }
   ];
@@ -268,7 +601,17 @@ const JeevaDB = (() => {
   }
 
   // PORTFOLIO CRUD
+  const PORTFOLIO_DATA_VERSION = 'v15-natraj-engagement';
   function getPortfolio() {
+    const storedVer = getLS('jp_portfolio_ver', null);
+    if (storedVer !== PORTFOLIO_DATA_VERSION) {
+      if (typeof PORTFOLIO_DATA !== 'undefined') {
+        const base = JSON.parse(JSON.stringify(PORTFOLIO_DATA));
+        setLS('jp_portfolio', base);
+        setLS('jp_portfolio_ver', PORTFOLIO_DATA_VERSION);
+        return base;
+      }
+    }
     const custom = getLS('jp_portfolio', null);
     if (custom && Array.isArray(custom)) return custom;
     if (typeof PORTFOLIO_DATA !== 'undefined') {
@@ -427,7 +770,19 @@ const JeevaDB = (() => {
 
   // PACKAGES CRUD
   function getPackages() {
-    return getLS('jp_packages', DEFAULT_PACKAGES);
+    // Version-based cache reset: if data version changed, reload defaults
+    const storedVer = getLS('jp_packages_ver', null);
+    if (storedVer !== PACKAGES_DATA_VERSION) {
+      setLS('jp_packages', DEFAULT_PACKAGES);
+      setLS('jp_packages_ver', PACKAGES_DATA_VERSION);
+      return DEFAULT_PACKAGES;
+    }
+    const list = getLS('jp_packages', DEFAULT_PACKAGES);
+    if (!list || !list.length || !list.some(p => p.category === 'Wedding & Reception') || !list.some(p => p.category === 'Wedding') || !list.some(p => p.category === 'Engagement & Wedding')) {
+      setLS('jp_packages', DEFAULT_PACKAGES);
+      return DEFAULT_PACKAGES;
+    }
+    return list;
   }
 
   function savePackages(list) {

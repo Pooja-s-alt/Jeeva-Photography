@@ -892,6 +892,19 @@
       .sr, .fr, .qa { grid-template-columns: 1fr; }
       .pc { padding: 1.2rem; }
     }
+
+    /* === FLOATING SOCIAL SIDEBAR === */
+    .social-sidebar { position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 9999; display: flex; flex-direction: column; align-items: flex-end; gap: 0; }
+    .social-sidebar-link { display: flex; align-items: center; justify-content: center; width: 46px; height: 46px; color: #fff; text-decoration: none; border-radius: 10px 0 0 10px; transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); position: relative; box-shadow: -3px 3px 14px rgba(0,0,0,0.45); }
+    .social-sidebar-link svg { width: 22px; height: 22px; flex-shrink: 0; transition: transform 0.3s ease; }
+    .social-sidebar-link.ss-phone   { background: linear-gradient(135deg, #34c759, #1a8c3c); }
+    .social-sidebar-link.ss-insta   { background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af, #515bd4); }
+    .social-sidebar-link.ss-youtube { background: linear-gradient(135deg, #ff3d3d, #cc0000); }
+    .social-sidebar-link.ss-wp      { background: linear-gradient(135deg, #25d366, #128c7e); }
+    .social-sidebar-link::before { content: attr(data-tooltip); position: absolute; right: 54px; top: 50%; transform: translateY(-50%) translateX(8px); background: rgba(10,15,8,0.95); color: #f5f0e8; font-size: 0.72rem; font-weight: 600; white-space: nowrap; padding: 5px 10px; border-radius: 6px; pointer-events: none; opacity: 0; transition: all 0.3s ease; border: 1px solid rgba(212,180,131,0.3); }
+    .social-sidebar-link:hover::before { opacity: 1; transform: translateY(-50%) translateX(0); }
+    .social-sidebar-link:hover { width: 52px; box-shadow: -5px 4px 20px rgba(0,0,0,0.55); }
+    .social-sidebar-link:hover svg { transform: scale(1.15); }
   </style>
 </head>
 <body>
@@ -1239,6 +1252,16 @@
           </div>
           <div class="fr">
             <div class="ff">
+              <label class="flb">About Highlight Photo 2 (Rain Shoot)</label>
+              <input class="fc" id="ab_fimg2" value="images/about-2.jpg" />
+            </div>
+            <div class="ff">
+              <label class="flb">About Highlight Photo 3 (Beach Shoot)</label>
+              <input class="fc" id="ab_fimg3" value="images/about-3.jpg" />
+            </div>
+          </div>
+          <div class="fr">
+            <div class="ff">
               <label class="flb">Floating Badge Number</label>
               <input class="fc" id="ab_fbadgeNum" value="571+" />
             </div>
@@ -1296,7 +1319,7 @@
             <button class="filter-pill" data-cat="portraits" onclick="filterPortfolio('portraits', this)">Portraits</button>
             <button class="filter-pill" data-cat="candid" onclick="filterPortfolio('candid', this)">Candid</button>
             <button class="filter-pill" data-cat="pre-wedding" onclick="filterPortfolio('pre-wedding', this)">Pre-Wedding</button>
-            <button class="filter-pill" data-cat="events" onclick="filterPortfolio('events', this)">Events</button>
+            <button class="filter-pill" data-cat="engagement" onclick="filterPortfolio('engagement', this)">Engagement</button>
           </div>
           <div class="si-wrap" style="max-width:300px;margin-left:auto">
             <svg class="si-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -1355,6 +1378,15 @@
           </div>
           <div class="sha">
             <button class="bg" onclick="openAddPackage()">+ Add Custom Package</button>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <div class="filter-pills" id="packageFilterPills">
+            <button class="filter-pill ac" data-pcat="all" onclick="filterAdminPackages('all', this)">All Collections (9)</button>
+            <button class="filter-pill" data-pcat="Engagement &amp; Wedding" onclick="filterAdminPackages('Engagement &amp; Wedding', this)">💍 Engagement &amp; Wedding</button>
+            <button class="filter-pill" data-pcat="Wedding" onclick="filterAdminPackages('Wedding', this)">👑 Wedding Only</button>
+            <button class="filter-pill" data-pcat="Wedding &amp; Reception" onclick="filterAdminPackages('Wedding &amp; Reception', this)">✨ Wedding &amp; Reception</button>
           </div>
         </div>
 
@@ -1541,7 +1573,7 @@
             <option value="portraits">Portraits</option>
             <option value="candid">Candid</option>
             <option value="pre-wedding">Pre-Wedding</option>
-            <option value="events">Events</option>
+            <option value="engagement">Engagement</option>
           </select>
         </div>
         <div class="ff">
@@ -1741,6 +1773,22 @@
         <div class="ff">
           <label class="flb">Script Accent Heading</label>
           <input class="fc" id="pkgScriptTitle" placeholder="Premium" required />
+        </div>
+      </div>
+
+      <div class="fr">
+        <div class="ff">
+          <label class="flb">Package Collection / Category</label>
+          <select class="fc" id="pkgCategory">
+            <option value="Engagement &amp; Wedding">Engagement &amp; Wedding</option>
+            <option value="Wedding">Wedding</option>
+            <option value="Wedding &amp; Reception">Wedding &amp; Reception</option>
+            <option value="Custom">Custom</option>
+          </select>
+        </div>
+        <div class="ff">
+          <label class="flb">Subtitle / Tag</label>
+          <input class="fc" id="pkgSubtitle" placeholder="ENGAGEMENT &amp; WEDDING / WEDDING / WEDDING &amp; RECEPTION" />
         </div>
       </div>
 
@@ -2068,6 +2116,8 @@ function loadAboutValues() {
   if (ab.founderName) document.getElementById('ab_fname').value = ab.founderName;
   if (ab.founderRole) document.getElementById('ab_frole').value = ab.founderRole;
   if (ab.founderImage) document.getElementById('ab_fimg').value = ab.founderImage;
+  if (ab.aboutImg2) document.getElementById('ab_fimg2').value = ab.aboutImg2;
+  if (ab.aboutImg3) document.getElementById('ab_fimg3').value = ab.aboutImg3;
   if (ab.floatingBadgeNum) document.getElementById('ab_fbadgeNum').value = ab.floatingBadgeNum;
   if (ab.floatingBadgeLabel) document.getElementById('ab_fbadgeLbl').value = ab.floatingBadgeLabel;
   if (ab.sectionTag) document.getElementById('ab_tag').value = ab.sectionTag;
@@ -2100,6 +2150,8 @@ function saveAboutSection() {
     founderName: document.getElementById('ab_fname').value.trim(),
     founderRole: document.getElementById('ab_frole').value.trim(),
     founderImage: document.getElementById('ab_fimg').value.trim(),
+    aboutImg2: document.getElementById('ab_fimg2') ? document.getElementById('ab_fimg2').value.trim() : 'images/about-2.jpg',
+    aboutImg3: document.getElementById('ab_fimg3') ? document.getElementById('ab_fimg3').value.trim() : 'images/about-3.jpg',
     floatingBadgeNum: document.getElementById('ab_fbadgeNum').value.trim(),
     floatingBadgeLabel: document.getElementById('ab_fbadgeLbl').value.trim(),
     sectionTag: document.getElementById('ab_tag').value.trim(),
@@ -2381,7 +2433,7 @@ function autoFillCatLabel(cat) {
     portraits: 'Editorial Portrait',
     candid: 'Candid Couple Story',
     'pre-wedding': 'Pre-Wedding Story',
-    events: 'Celebration & Reception'
+    engagement: 'Engagement Ceremony'
   };
   document.getElementById('photoCatLabel').value = map[cat] || cat;
 }
@@ -2797,11 +2849,24 @@ function deleteTestimonialConfirm(id) {
 }
 
 // 10. PACKAGES CONTROLLER
+let currentAdminPackageCat = 'all';
+
+function filterAdminPackages(cat, btn) {
+  currentAdminPackageCat = cat;
+  document.querySelectorAll('#packageFilterPills .filter-pill').forEach(p => p.classList.remove('ac'));
+  if (btn) btn.classList.add('ac');
+  renderPackagesGrid();
+}
+
 function renderPackagesGrid() {
-  const list = JeevaDB.getPackages();
+  let list = JeevaDB.getPackages();
+  if (currentAdminPackageCat !== 'all') {
+    list = list.filter(pkg => (pkg.category || 'Engagement & Wedding') === currentAdminPackageCat);
+  }
+
   const grid = document.getElementById('packagesGrid');
   if (!list.length) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t2);padding:4rem">No packages found.</div>';
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t2);padding:4rem">No packages found for this collection.</div>';
     return;
   }
 
@@ -2809,6 +2874,7 @@ function renderPackagesGrid() {
     <div class="pkg-admin-card ${pkg.isPopular ? 'popular' : ''}">
       ${pkg.isPopular ? '<span class="pkg-pop-badge">Most Popular</span>' : ''}
       <h3 class="pkg-title">${escapeHtml(pkg.scriptTitle || pkg.title)}</h3>
+      <div style="font-size:0.75rem;font-weight:700;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;margin-bottom:0.5rem">${escapeHtml(pkg.subtitle || pkg.category || 'WEDDING')}</div>
       <div class="pkg-price"><span>Rs</span>${escapeHtml(pkg.price)}</div>
       <ul class="pkg-features">
         ${(pkg.features || []).map(f => `<li>${escapeHtml(f)}</li>`).join('')}
@@ -2825,6 +2891,8 @@ function openAddPackage() {
   document.getElementById('pkmTitle').textContent = 'Add Photography Package';
   document.getElementById('pkgId').value = '';
   document.getElementById('pkgForm').reset();
+  document.getElementById('pkgCategory').value = currentAdminPackageCat !== 'all' ? currentAdminPackageCat : 'Wedding';
+  document.getElementById('pkgSubtitle').value = document.getElementById('pkgCategory').value.toUpperCase();
   document.getElementById('pkgModal').classList.add('on');
 }
 
@@ -2835,6 +2903,8 @@ function openEditPackage(id) {
   document.getElementById('pkgId').value = pkg.id;
   document.getElementById('pkgTitle').value = pkg.title;
   document.getElementById('pkgScriptTitle').value = pkg.scriptTitle || pkg.title;
+  document.getElementById('pkgCategory').value = pkg.category || 'Wedding';
+  document.getElementById('pkgSubtitle').value = pkg.subtitle || pkg.category || 'WEDDING';
   document.getElementById('pkgPrice').value = pkg.price;
   document.getElementById('pkgBadge').value = pkg.badge || '';
   document.getElementById('pkgIsPopular').value = pkg.isPopular ? 'true' : 'false';
@@ -2851,22 +2921,29 @@ function savePackage(e) {
     .map(s => s.trim())
     .filter(Boolean);
 
+  const existing = JeevaDB.getPackages().find(x => String(x.id) === String(id)) || {};
+
+  const cat = document.getElementById('pkgCategory').value;
+  const sub = document.getElementById('pkgSubtitle').value.trim() || cat.toUpperCase();
+
   const item = {
+    ...existing,
     id,
     title: document.getElementById('pkgTitle').value.trim(),
     scriptTitle: document.getElementById('pkgScriptTitle').value.trim(),
+    subtitle: sub,
+    category: cat,
     price: document.getElementById('pkgPrice').value.trim(),
     currency: 'Rs',
     badge: document.getElementById('pkgBadge').value.trim() || 'PROMESSE',
     isPopular: document.getElementById('pkgIsPopular').value === 'true',
     popularBadge: 'Most Popular',
     mainImage: document.getElementById('pkgMainImage').value.trim() || 'images/hero-slide-2.jpg',
-    thumbImage: 'images/hero-slide-1.jpg',
+    thumbImage: existing.thumbImage || 'images/hero-slide-1.jpg',
     features
   };
 
-  const existing = JeevaDB.getPackages().find(x => String(x.id) === String(id));
-  if (existing) {
+  if (existing.id) {
     JeevaDB.updatePackage(id, item);
     toast('Package updated successfully');
   } else {
@@ -2994,5 +3071,30 @@ function initAdmin() {
   loadSettingsValues();
 }
 </script>
+
+<!-- FLOATING SOCIAL SIDEBAR -->
+<div class="social-sidebar" id="adminSocialSidebar" aria-label="Social Media Quick Links">
+  <div>
+    <a href="tel:+919514751045" class="social-sidebar-link ss-phone" data-tooltip="+91 95147 51045" aria-label="Call" id="adminSidebarPhone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.57 3.4 2 2 0 0 1 3.54 1h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.5a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    </a>
+  </div>
+  <div>
+    <a href="https://wa.me/919514751045?text=Hi%20Jeeva%20Photography!" target="_blank" rel="noopener" class="social-sidebar-link ss-wp" data-tooltip="WhatsApp" aria-label="WhatsApp" id="adminSidebarWA">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+    </a>
+  </div>
+  <div>
+    <a href="https://www.instagram.com/jeeva_photography_official" target="_blank" rel="noopener" class="social-sidebar-link ss-insta" data-tooltip="Instagram" aria-label="Instagram" id="adminSidebarInsta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+    </a>
+  </div>
+  <div>
+    <a href="https://youtube.com/@jeevabcom21" target="_blank" rel="noopener" class="social-sidebar-link ss-youtube" data-tooltip="YouTube" aria-label="YouTube" id="adminSidebarYT">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/></svg>
+    </a>
+  </div>
+</div>
+
 </body>
 </html>
