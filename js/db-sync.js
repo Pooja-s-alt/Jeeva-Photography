@@ -601,7 +601,7 @@ const JeevaDB = (() => {
   }
 
   // PORTFOLIO CRUD
-  const PORTFOLIO_DATA_VERSION = 'v15-natraj-engagement';
+  const PORTFOLIO_DATA_VERSION = 'v25-clean-final-gallery';
   function getPortfolio() {
     const storedVer = getLS('jp_portfolio_ver', null);
     if (storedVer !== PORTFOLIO_DATA_VERSION) {
@@ -612,11 +612,20 @@ const JeevaDB = (() => {
         return base;
       }
     }
+    if (typeof PORTFOLIO_DATA !== 'undefined') {
+      const base = JSON.parse(JSON.stringify(PORTFOLIO_DATA));
+      const custom = getLS('jp_portfolio', null);
+      if (custom && Array.isArray(custom)) {
+        // Find custom items added via admin (starts with p_)
+        const userAdded = custom.filter(x => x && String(x.id).startsWith('p_'));
+        if (userAdded.length) {
+          return [...userAdded, ...base];
+        }
+      }
+      return base;
+    }
     const custom = getLS('jp_portfolio', null);
     if (custom && Array.isArray(custom)) return custom;
-    if (typeof PORTFOLIO_DATA !== 'undefined') {
-      return JSON.parse(JSON.stringify(PORTFOLIO_DATA));
-    }
     return [];
   }
 
