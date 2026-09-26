@@ -112,10 +112,13 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentCategory = 'all';
 
   const getPortfolioItems = () => {
+    if (typeof PORTFOLIO_DATA !== 'undefined' && Array.isArray(PORTFOLIO_DATA) && PORTFOLIO_DATA.length > 0) {
+      return PORTFOLIO_DATA;
+    }
     if (typeof JeevaDB !== 'undefined' && typeof JeevaDB.getPortfolio === 'function') {
       return JeevaDB.getPortfolio();
     }
-    return typeof PORTFOLIO_DATA !== 'undefined' ? PORTFOLIO_DATA : [];
+    return [];
   };
 
   const renderPortfolio = (category = 'all') => {
